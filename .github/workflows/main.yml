@@ -1,0 +1,45 @@
+name: Next.js Gemstone CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' # Hoặc 'pnpm' / 'yarn'
+
+      - name: Install Dependencies
+        run: npm ci # Sử dụng ci để đảm bảo đúng version trong package-lock.json
+
+      - name: Lint & Formatting Check
+        run: |
+          npm run lint
+          # Nếu bạn dùng Prettier: npx prettier --check .
+
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+
+      - name: Build Next.js App
+        run: npm run build
+        env:
+          # Truyền các biến môi trường cần thiết cho quá trình Build (Etsy API, Stripe Public Key)
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_ETSY_SHOP_URL: ${{ secrets.NEXT_PUBLIC_ETSY_SHOP_URL }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: .next/
