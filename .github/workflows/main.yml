@@ -2,7 +2,7 @@ name: Next.js Gemstone CI/CD
 
 on:
   push:
-    branches: [ "production", "develop" ]
+    branches: [ "production", "sit" ]
   pull_request:
     branches: [ "production" ]
 

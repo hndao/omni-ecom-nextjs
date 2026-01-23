@@ -1,0 +1,32 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "french": "Français",
+    "currency": "USD",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "search": "Search",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "products": {
+    "title": "Products",
+    "description": "Browse our collection",
+    "price": "Price",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "viewDetails": "View Details"
+  },
+  "categories": {
+    "title": "Categories",
+    "allCategories": "All Categories",
+    "noProducts": "No products in this category"
+  },
+  "errors": {
+    "404": "Page not found",
+    "500": "Internal server error",
+    "generic": "Something went wrong"
+  }
+}

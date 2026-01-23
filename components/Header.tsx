@@ -9,7 +9,7 @@ export default function Header() {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-charcoal/5 px-6 md:px-20 py-4"
+      className="sticky top-0 z-50 w-full bg-background-light/80 backdrop-blur-md border-b border-charcoal/5 px-6 md:px-20 py-4"
     >
       <div className="max-w-[1440px] mx-auto flex items-center justify-between">
         {/* Left Nav */}

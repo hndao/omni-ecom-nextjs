@@ -1,0 +1,32 @@
+{
+  "common": {
+    "language": "Langue",
+    "english": "English",
+    "french": "Français",
+    "currency": "CAD",
+    "cart": "Panier",
+    "checkout": "Passer la commande",
+    "search": "Rechercher",
+    "login": "Connexion",
+    "logout": "Déconnexion"
+  },
+  "products": {
+    "title": "Produits",
+    "description": "Parcourir notre collection",
+    "price": "Prix",
+    "addToCart": "Ajouter au panier",
+    "outOfStock": "Rupture de stock",
+    "inStock": "En stock",
+    "viewDetails": "Voir les détails"
+  },
+  "categories": {
+    "title": "Catégories",
+    "allCategories": "Toutes les catégories",
+    "noProducts": "Aucun produit dans cette catégorie"
+  },
+  "errors": {
+    "404": "Page non trouvée",
+    "500": "Erreur interne du serveur",
+    "generic": "Une erreur s'est produite"
+  }
+}

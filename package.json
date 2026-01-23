@@ -2,6 +2,10 @@
   "name": "omni-ecom-nextjs",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +16,7 @@
     "framer-motion": "^12.27.5",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
+    "next-intl": "^4.4.0",
     "react": "19.2.3",
     "react-confetti": "^6.4.0",
     "react-dom": "19.2.3"
