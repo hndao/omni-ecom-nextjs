@@ -14,6 +14,43 @@ interface ProductDetailClientProps {
   locale: string;
 }
 
+// Helper function to check if a listing/product is in stock
+function isInStock(item: Product): boolean {
+  // If it's a listing with products (bundle or variant)
+  if (item.products && item.products.length > 0) {
+    if (item.mapping_type === 'bundle') {
+      // For bundles: ALL products must have stock
+      return item.products.every(p => p.inventory && p.inventory.available > 0);
+    } else if (item.mapping_type === 'variant') {
+      // For variants: ANY product must have stock
+      return item.products.some(p => p.inventory && p.inventory.available > 0);
+    }
+  }
+
+  // For regular products: check inventory
+  return item.inventory ? item.inventory.available > 0 : false;
+}
+
+// Helper function to get available quantity for display
+function getAvailableQuantity(item: Product): number {
+  // If it's a listing with products
+  if (item.products && item.products.length > 0) {
+    if (item.mapping_type === 'bundle') {
+      // For bundles: minimum available across all products
+      const quantities = item.products
+        .map(p => p.inventory?.available || 0)
+        .filter(q => q > 0);
+      return quantities.length > 0 ? Math.min(...quantities) : 0;
+    } else if (item.mapping_type === 'variant') {
+      // For variants: maximum available across all products
+      return Math.max(...item.products.map(p => p.inventory?.available || 0));
+    }
+  }
+
+  // For regular products
+  return item.inventory?.available || 0;
+}
+
 export default function ProductDetailClient({ product, locale }: ProductDetailClientProps) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -34,8 +71,12 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
   };
 
   const getProductName = () => {
+    // For listings, use title instead of name
+    if (product.title) {
+      return product.title;
+    }
     const translation = product.translations?.find((t) => t.locale === locale);
-    return translation?.name || product.name;
+    return translation?.name || product.name || 'Untitled';
   };
 
   const getProductDescription = () => {
@@ -50,14 +91,14 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
 
   const images = product.images || [];
   const coverImage = images.find((img) => img.is_cover || img.pivot?.is_cover) || images[0];
-  const displayImages = images.length > 0 ? images : [{ 
-    id: 0, 
+  const displayImages = images.length > 0 ? images : [{
+    id: 0,
     storage_url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Crect width='800' height='800' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='48' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E",
-    is_cover: true 
+    is_cover: true
   }];
 
-  const isInStock = product.inventory && product.inventory.available > 0;
-  const maxQuantity = product.inventory?.available || 0;
+  const productInStock = isInStock(product);
+  const maxQuantity = getAvailableQuantity(product);
 
   const incrementQuantity = () => {
     if (quantity < maxQuantity) {
@@ -204,9 +245,9 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
 
             {/* Stock Status */}
             <div className="border-t border-b border-charcoal/10 py-6">
-              {isInStock ? (
+              {productInStock ? (
                 <p className="text-sm uppercase tracking-widest text-green-600">
-                  In Stock ({product.inventory?.available} available)
+                  In Stock ({maxQuantity} available)
                 </p>
               ) : (
                 <p className="text-sm uppercase tracking-widest text-red-600">
@@ -216,7 +257,7 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
             </div>
 
             {/* Quantity Selector */}
-            {isInStock && !product.external_purchase_url && (
+            {productInStock && !product.external_purchase_url && (
               <div className="flex items-center gap-6">
                 <span className="text-sm uppercase tracking-widest font-medium">Quantity:</span>
                 <div className="flex items-center border border-charcoal/20">
@@ -258,14 +299,14 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     onClick={handleBuyNow}
-                    disabled={!isInStock}
+                    disabled={!productInStock}
                     className="w-full bg-charcoal text-white px-8 py-5 text-sm uppercase tracking-widest font-bold hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                   >
-                    {isInStock ? "Buy Now" : "Out of Stock"}
+                    {productInStock ? "Buy Now" : "Out of Stock"}
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
-                    disabled={!isInStock}
+                    disabled={!productInStock}
                     className="w-full border-2 border-charcoal text-charcoal px-8 py-5 text-sm uppercase tracking-widest font-bold hover:bg-charcoal hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Add to Cart

@@ -22,6 +22,43 @@ interface ShopClientProps {
   initialOrder?: string;
 }
 
+// Helper function to check if a listing/product is in stock
+function isInStock(item: Product): boolean {
+  // If it's a listing with products (bundle or variant)
+  if (item.products && item.products.length > 0) {
+    if (item.mapping_type === 'bundle') {
+      // For bundles: ALL products must have stock
+      return item.products.every(p => p.inventory && p.inventory.available > 0);
+    } else if (item.mapping_type === 'variant') {
+      // For variants: ANY product must have stock
+      return item.products.some(p => p.inventory && p.inventory.available > 0);
+    }
+  }
+
+  // For regular products: check inventory
+  return item.inventory ? item.inventory.available > 0 : false;
+}
+
+// Helper function to get available quantity for display
+function getAvailableQuantity(item: Product): number {
+  // If it's a listing with products
+  if (item.products && item.products.length > 0) {
+    if (item.mapping_type === 'bundle') {
+      // For bundles: minimum available across all products
+      const quantities = item.products
+        .map(p => p.inventory?.available || 0)
+        .filter(q => q > 0);
+      return quantities.length > 0 ? Math.min(...quantities) : 0;
+    } else if (item.mapping_type === 'variant') {
+      // For variants: maximum available across all products
+      return Math.max(...item.products.map(p => p.inventory?.available || 0));
+    }
+  }
+
+  // For regular products
+  return item.inventory?.available || 0;
+}
+
 export default function ShopClient({
   initialProducts,
   pagination,
@@ -37,7 +74,7 @@ export default function ShopClient({
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState(initialSort);
   const [sortOrder, setSortOrder] = useState(initialOrder);
-  
+
   const { width, height } = useWindowSize();
   const router = useRouter();
   const pathname = usePathname();
@@ -119,8 +156,12 @@ export default function ShopClient({
   };
 
   const getProductName = (product: Product) => {
+    // For listings, use title instead of name
+    if (product.title) {
+      return product.title;
+    }
     const translation = product.translations?.find((t) => t.locale === locale);
-    return translation?.name || product.name;
+    return translation?.name || product.name || 'Untitled';
   };
 
   const getProductDescription = (product: Product) => {
@@ -418,8 +459,12 @@ function ProductCard({
     if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
       return;
     }
-    router.push(`/${locale}/shop/${product.id}`);
+    // router from @/i18n/routing already handles locale prefixing
+    router.push(`/shop/${product.id}`);
   };
+
+  const inStock = isInStock(product);
+  const availableQty = getAvailableQuantity(product);
 
   return (
     <motion.div
@@ -434,9 +479,9 @@ function ProductCard({
       onClick={handleCardClick}
     >
       <div className="relative overflow-hidden mb-6 aspect-[4/5] bg-gray-100">
-        {product.inventory && product.inventory.available > 0 && product.inventory.available < 5 && (
+        {availableQty > 0 && availableQty < 5 && (
           <span className="absolute top-4 left-4 z-10 bg-primary text-white text-[10px] uppercase tracking-[0.2em] px-3 py-1 font-bold">
-            Only {product.inventory.available} Left
+            Only {availableQty} Left
           </span>
         )}
 
@@ -477,9 +522,9 @@ function ProductCard({
               animate={{ y: isHovered ? 0 : 20 }}
               onClick={onBuyNow}
               className="bg-white/90 px-6 py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-primary hover:text-white transition-colors"
-              disabled={!product.inventory || product.inventory.available === 0}
+              disabled={!inStock}
             >
-              {product.inventory && product.inventory.available > 0 ? "Buy Now" : "Out of Stock"}
+              {inStock ? "Buy Now" : "Out of Stock"}
             </motion.button>
           )}
         </div>

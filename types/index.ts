@@ -2,15 +2,23 @@
 
 export interface Product {
   id: number;
-  sku: string;
-  name: string;
+  sku?: string; // Optional for listings
+  name?: string; // Optional for listings
+  title?: string; // For listings
+  slug?: string; // For listings
   description: string | null;
   price: string;
-  cost_price: string | null;
+  cost_price?: string | null;
   status: 'active' | 'archived';
-  metadata: Record<string, any> | null;
+  metadata?: Record<string, any> | null;
   created_at: string;
   updated_at: string;
+
+  // Listing-specific fields
+  mapping_type?: 'bundle' | 'variant';
+  calculated_quantity?: number;
+  external_id?: string;
+  url?: string | null;
 
   // Relationships
   inventory?: Inventory;
@@ -18,6 +26,7 @@ export interface Product {
   images?: ProductImage[];
   translations?: ProductTranslation[];
   attributes?: ProductAttribute[];
+  products?: Product[]; // For listings that contain multiple products
 
   // Computed
   cover_image?: ProductImage;

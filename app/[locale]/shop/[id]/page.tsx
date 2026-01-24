@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getProduct } from '@/lib/api';
+import { getListing } from '@/lib/api';
 import ProductDetailClient from './ProductDetailClient';
 import { notFound } from 'next/navigation';
 
@@ -9,20 +9,18 @@ export default async function ProductDetailPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale, id } = await params;
-  
-  // Validate ID is a number
-  const productId = parseInt(id, 10);
-  if (isNaN(productId)) {
-    notFound();
-  }
+
+  // ID can be numeric ID or slug
+  const listingId = parseInt(id, 10);
+  const identifier = isNaN(listingId) ? id : listingId;
 
   try {
-    const response = await getProduct(productId, locale);
-    const product = response.data;
+    const response = await getListing(identifier, locale);
+    const listing = response.data;
 
-    return <ProductDetailClient product={product} locale={locale} />;
+    return <ProductDetailClient product={listing} locale={locale} />;
   } catch (error) {
-    console.error('Failed to fetch product:', error);
+    console.error('Failed to fetch listing:', error);
     notFound();
   }
 }

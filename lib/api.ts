@@ -64,7 +64,39 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 /**
- * Get paginated products with filters
+ * Get paginated listings with filters (what customers see in the shop)
+ */
+export async function getListings(
+  params?: ProductsParams,
+  locale?: string
+): Promise<PaginatedResponse<Product>> {
+  const queryParams = new URLSearchParams();
+
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value));
+      }
+    });
+  }
+
+  const queryString = queryParams.toString();
+  const endpoint = `/listings${queryString ? `?${queryString}` : ''}`;
+
+  const response = await fetchWithLocale(endpoint, { locale });
+  return handleResponse<PaginatedResponse<Product>>(response);
+}
+
+/**
+ * Get single listing by ID or slug
+ */
+export async function getListing(identifier: string | number, locale?: string): Promise<{ data: Product }> {
+  const response = await fetchWithLocale(`/listings/${identifier}`, { locale });
+  return handleResponse<{ data: Product }>(response);
+}
+
+/**
+ * Get paginated products with filters (legacy - for internal use)
  */
 export async function getProducts(
   params?: ProductsParams,
