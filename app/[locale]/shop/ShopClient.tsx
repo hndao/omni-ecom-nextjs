@@ -397,32 +397,32 @@ export default function ShopClient({
       </main>
 
       {/* Footer */}
-      <footer className="bg-charcoal text-[#fbfbf9] py-24 mt-24">
+      <footer className="bg-background-light border-t border-charcoal/5 py-24 mt-24">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="col-span-1 md:col-span-1">
-            <h2 className="text-2xl font-bold uppercase mb-8 tracking-tighter">Luxe Gemstones</h2>
-            <p className="text-sm font-light text-gray-400 leading-relaxed mb-8">
+            <h2 className="text-2xl font-bold uppercase mb-8 tracking-tighter text-charcoal">Luxe Gemstones</h2>
+            <p className="text-sm font-light text-charcoal/60 leading-relaxed mb-8">
               Crafting legacies since 1924. We specialize in the acquisition of rare earth elements and bespoke jewelry
               design.
             </p>
           </div>
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] font-bold mb-8 text-primary">Explore</h4>
-            <ul className="space-y-4 text-sm font-light text-gray-400">
+            <ul className="space-y-4 text-sm font-light text-charcoal/60">
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:text-primary transition-colors">
                   The Archives
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:text-primary transition-colors">
                   Investment Grade
                 </Link>
               </li>
             </ul>
           </div>
         </div>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest text-gray-600">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mt-24 pt-8 border-t border-charcoal/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest text-charcoal/40">
           <p>© 2024 Luxe Gemstones International. All Rights Reserved.</p>
         </div>
       </footer>

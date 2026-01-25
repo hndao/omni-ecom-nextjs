@@ -11,6 +11,7 @@ import type { Product } from "@/types";
 
 interface ProductDetailClientProps {
   product: Product;
+  relatedProducts?: Product[];
   locale: string;
 }
 
@@ -51,7 +52,7 @@ function getAvailableQuantity(item: Product): number {
   return item.inventory?.available || 0;
 }
 
-export default function ProductDetailClient({ product, locale }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, relatedProducts = [], locale }: ProductDetailClientProps) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -338,33 +339,98 @@ export default function ProductDetailClient({ product, locale }: ProductDetailCl
         </div>
       </main>
 
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
+        <section className="max-w-[1440px] mx-auto px-6 lg:px-12 py-24">
+          <div className="mb-16">
+            <h2 className="text-4xl md:text-5xl font-light italic font-serif mb-4">You May Also Like</h2>
+            <p className="text-sm uppercase tracking-widest text-charcoal/50">Curated selections based on this item</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {relatedProducts.map((relatedProduct) => {
+              const relatedImages = relatedProduct.images || [];
+              const relatedCoverImage = relatedImages.find((img) => img.is_cover || img.pivot?.is_cover) || relatedImages[0];
+              const relatedSecondImage = relatedImages[1] || relatedCoverImage;
+              const relatedInStock = isInStock(relatedProduct);
+
+              return (
+                <Link
+                  key={relatedProduct.id}
+                  href={`/shop/${relatedProduct.id}`}
+                  className="group block"
+                >
+                  <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-4">
+                    {/* Primary Image */}
+                    {relatedCoverImage && (
+                      <Image
+                        src={relatedCoverImage.storage_url}
+                        alt={relatedProduct.title || relatedProduct.name || 'Product'}
+                        fill
+                        className="object-cover transition-opacity duration-500 group-hover:opacity-0"
+                      />
+                    )}
+                    {/* Secondary Image (on hover) */}
+                    {relatedSecondImage && (
+                      <Image
+                        src={relatedSecondImage.storage_url}
+                        alt={relatedProduct.title || relatedProduct.name || 'Product'}
+                        fill
+                        className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                      />
+                    )}
+                    {/* Out of Stock Badge */}
+                    {!relatedInStock && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="text-white text-sm uppercase tracking-widest font-medium px-4 py-2 border border-white">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-light group-hover:text-primary transition-colors line-clamp-2">
+                      {relatedProduct.title || relatedProduct.name}
+                    </h3>
+                    <p className="text-sm text-charcoal/60">
+                      {formatPrice(relatedProduct.price)}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Footer */}
-      <footer className="bg-charcoal text-[#fbfbf9] py-24 mt-24">
+      <footer className="bg-background-light border-t border-charcoal/5 py-24 mt-24">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="col-span-1 md:col-span-1">
-            <h2 className="text-2xl font-bold uppercase mb-8 tracking-tighter">Luxe Gemstones</h2>
-            <p className="text-sm font-light text-gray-400 leading-relaxed mb-8">
+            <h2 className="text-2xl font-bold uppercase mb-8 tracking-tighter text-charcoal">Luxe Gemstones</h2>
+            <p className="text-sm font-light text-charcoal/60 leading-relaxed mb-8">
               Crafting legacies since 1924. We specialize in the acquisition of rare earth elements and bespoke jewelry
               design.
             </p>
           </div>
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] font-bold mb-8 text-primary">Explore</h4>
-            <ul className="space-y-4 text-sm font-light text-gray-400">
+            <ul className="space-y-4 text-sm font-light text-charcoal/60">
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:text-primary transition-colors">
                   The Archives
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:text-primary transition-colors">
                   Investment Grade
                 </Link>
               </li>
             </ul>
           </div>
         </div>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest text-gray-600">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mt-24 pt-8 border-t border-charcoal/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest text-charcoal/40">
           <p>© 2024 Luxe Gemstones International. All Rights Reserved.</p>
         </div>
       </footer>

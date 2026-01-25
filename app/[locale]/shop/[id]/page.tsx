@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getListing } from '@/lib/api';
+import { getListing, getRelatedListings } from '@/lib/api';
 import ProductDetailClient from './ProductDetailClient';
 import { notFound } from 'next/navigation';
 
@@ -15,10 +15,15 @@ export default async function ProductDetailPage({
   const identifier = isNaN(listingId) ? id : listingId;
 
   try {
-    const response = await getListing(identifier, locale);
-    const listing = response.data;
+    const [listingResponse, relatedResponse] = await Promise.all([
+      getListing(identifier, locale),
+      getRelatedListings(identifier, 4, locale).catch(() => ({ data: [] })), // Gracefully handle errors
+    ]);
 
-    return <ProductDetailClient product={listing} locale={locale} />;
+    const listing = listingResponse.data;
+    const relatedProducts = relatedResponse.data;
+
+    return <ProductDetailClient product={listing} relatedProducts={relatedProducts} locale={locale} />;
   } catch (error) {
     console.error('Failed to fetch listing:', error);
     notFound();

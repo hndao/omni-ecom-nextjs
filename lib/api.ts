@@ -96,6 +96,21 @@ export async function getListing(identifier: string | number, locale?: string): 
 }
 
 /**
+ * Get related listings based on shared categories
+ */
+export async function getRelatedListings(
+  identifier: string | number,
+  limit: number = 4,
+  locale?: string
+): Promise<{ data: Product[] }> {
+  const queryParams = new URLSearchParams();
+  queryParams.append('limit', String(limit));
+
+  const response = await fetchWithLocale(`/listings/${identifier}/related?${queryParams.toString()}`, { locale });
+  return handleResponse<{ data: Product[] }>(response);
+}
+
+/**
  * Get paginated products with filters (legacy - for internal use)
  */
 export async function getProducts(
