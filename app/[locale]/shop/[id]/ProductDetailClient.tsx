@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Confetti from "react-confetti";
 import { useWindowSize } from "@/hooks/useWindowSize";
-import type { Product } from "@/types";
+import type { Product, ListingDetails } from "@/types";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -335,6 +335,100 @@ export default function ProductDetailClient({ product, relatedProducts = [], loc
                 </>
               )}
             </div>
+
+            {/* Listing Details */}
+            {product.listing_details && (
+              <div className="border-t border-charcoal/10 pt-8 space-y-6">
+                {/* Badge */}
+                {product.listing_details.badge && (
+                  <div className="inline-block px-4 py-2 bg-primary/10 text-primary text-xs uppercase tracking-widest font-medium">
+                    {product.listing_details.badge}
+                  </div>
+                )}
+
+                {/* Shipping Info */}
+                {product.listing_details.shipping_info && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs uppercase tracking-widest font-medium text-charcoal/50">
+                      Shipping
+                    </h4>
+                    <p className="text-sm text-charcoal/70 leading-relaxed">
+                      {product.listing_details.shipping_info}
+                    </p>
+                  </div>
+                )}
+
+                {/* Return Policy */}
+                {product.listing_details.return_policy && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs uppercase tracking-widest font-medium text-charcoal/50">
+                      Returns
+                    </h4>
+                    <p className="text-sm text-charcoal/70 leading-relaxed">
+                      {product.listing_details.return_policy}
+                    </p>
+                  </div>
+                )}
+
+                {/* Warranty Info */}
+                {product.listing_details.warranty_info && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs uppercase tracking-widest font-medium text-charcoal/50">
+                      Warranty
+                    </h4>
+                    <p className="text-sm text-charcoal/70 leading-relaxed">
+                      {product.listing_details.warranty_info}
+                    </p>
+                  </div>
+                )}
+
+                {/* Custom Attributes */}
+                {product.listing_details.custom_attributes &&
+                  Object.keys(product.listing_details.custom_attributes).length > 0 && (
+                  <div className="space-y-3">
+                    {Object.entries(product.listing_details.custom_attributes).map(([key, value]) => (
+                      <div key={key} className="flex justify-between text-sm">
+                        <span className="text-charcoal/50 uppercase tracking-widest">
+                          {key.replace(/_/g, ' ')}:
+                        </span>
+                        <span className="font-medium">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Processing Time (Etsy) */}
+                {product.listing_details.processing_time && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs uppercase tracking-widest font-medium text-charcoal/50">
+                      Processing Time
+                    </h4>
+                    <p className="text-sm text-charcoal/70">
+                      {product.listing_details.processing_time}
+                    </p>
+                  </div>
+                )}
+
+                {/* Materials (Etsy) */}
+                {product.listing_details.materials && product.listing_details.materials.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs uppercase tracking-widest font-medium text-charcoal/50">
+                      Materials
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {product.listing_details.materials.map((material, index) => (
+                        <span
+                          key={index}
+                          className="text-xs px-3 py-1 bg-charcoal/5 text-charcoal/70"
+                        >
+                          {material}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>

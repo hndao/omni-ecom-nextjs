@@ -1,5 +1,38 @@
 // API Response Types for OmniStock
 
+export interface ListingDetails {
+  // Website channel details
+  seo?: {
+    title: string;
+    description: string | null;
+    keywords: string[];
+  };
+  shipping_info?: string | null;
+  return_policy?: string | null;
+  warranty_info?: string | null;
+  custom_attributes?: Record<string, string | number | boolean>;
+  is_featured?: boolean;
+  badge?: string | null;
+
+  // Etsy channel details
+  shop_section?: string | null;
+  tags?: string[];
+  materials?: string[];
+  processing_time?: string | null;
+  listing_url?: string | null;
+
+  // Shopify channel details
+  vendor?: string | null;
+  product_type?: string | null;
+  handle?: string | null;
+
+  // Amazon channel details
+  asin?: string | null;
+  bullet_points?: string[];
+  brand?: string | null;
+  fulfillment?: string | null;
+}
+
 export interface Product {
   id: number;
   sku?: string; // Optional for listings
@@ -31,6 +64,9 @@ export interface Product {
   // Computed
   cover_image?: ProductImage;
   external_purchase_url?: string | null;
+
+  // Channel-specific listing details
+  listing_details?: ListingDetails;
 }
 
 export interface ProductTranslation {
