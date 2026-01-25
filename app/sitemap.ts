@@ -5,7 +5,7 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY || 'DYaOTulPEj2vJE8EDOzHEHqpHQXN
 const CHANNEL_DOMAIN = process.env.NEXT_PUBLIC_CHANNEL_DOMAIN || 'localhost';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://localhost:3000';
 
-const locales = ['en', 'fr'];
+const locales = ['en'];
 
 interface Product {
   id: number;
