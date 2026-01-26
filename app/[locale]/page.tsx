@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="max-w-[1440px] mx-auto px-6 md:px-20">
+      <main className="flex-grow max-w-[1440px] mx-auto px-6 md:px-20 w-full">
         {/* Hero Section */}
         <section className="min-h-[85vh] flex flex-col md:flex-row items-center gap-12 py-12 md:py-20">
           <motion.div

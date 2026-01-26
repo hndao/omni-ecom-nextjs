@@ -8,7 +8,133 @@
     "checkout": "Checkout",
     "search": "Search",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "register": "Sign Up",
+    "myAccount": "My Account",
+    "shop": "Shop",
+    "home": "Home",
+    "backToDashboard": "Back to Dashboard",
+    "backToOrders": "Back to Orders"
+  },
+  "home": {
+    "title": "Welcome to Omni E-Commerce",
+    "subtitle": "Your one-stop shop for amazing products. Browse our collection and find exactly what you need.",
+    "startShopping": "Start Shopping",
+    "myAccount": "My Account",
+    "features": {
+      "wideSelection": {
+        "title": "Wide Selection",
+        "description": "Browse through our extensive collection of products across multiple categories."
+      },
+      "fastShipping": {
+        "title": "Fast Shipping",
+        "description": "Get your orders delivered quickly with our reliable shipping partners."
+      },
+      "secureCheckout": {
+        "title": "Secure Checkout",
+        "description": "Shop with confidence using our secure payment processing system."
+      }
+    },
+    "quickLinks": "Quick Links",
+    "footer": "© 2026 Omni E-Commerce. All rights reserved."
+  },
+  "auth": {
+    "signIn": "Sign in to your account",
+    "createAccount": "Create your account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Or",
+    "createNewAccount": "create a new account",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone (optional)",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "signInButton": "Sign in",
+    "signingIn": "Signing in...",
+    "createAccountButton": "Create account",
+    "creatingAccount": "Creating account...",
+    "acceptTerms": "I accept the",
+    "termsAndConditions": "Terms and Conditions",
+    "passwordMinLength": "Must be at least 8 characters"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "subtitle": "Manage your account and view your orders",
+    "stats": {
+      "totalOrders": "Total Orders",
+      "pendingOrders": "Pending Orders",
+      "completedOrders": "Completed Orders",
+      "totalSpent": "Total Spent"
+    },
+    "quickLinks": {
+      "orderHistory": {
+        "title": "Order History",
+        "description": "View all your orders and track shipments"
+      },
+      "addresses": {
+        "title": "Addresses",
+        "description": "Manage your shipping and billing addresses"
+      },
+      "settings": {
+        "title": "Account Settings",
+        "description": "Update your profile and preferences"
+      }
+    },
+    "recentOrders": "Recent Orders",
+    "viewAll": "View all",
+    "noOrders": "No orders yet",
+    "startShopping": "Start shopping",
+    "loading": "Loading..."
+  },
+  "orders": {
+    "title": "Order History",
+    "subtitle": "View and track all your orders",
+    "searchPlaceholder": "Search by order number or product name...",
+    "filterByStatus": "Filter by Status",
+    "allOrders": "All Orders",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "placedOn": "Placed on",
+    "items": "item",
+    "itemsPlural": "items",
+    "more": "more",
+    "viewDetails": "View Details",
+    "reorder": "Reorder",
+    "cancelOrder": "Cancel Order",
+    "noOrdersFound": "No orders found",
+    "startShopping": "Start Shopping",
+    "loadingOrders": "Loading orders...",
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "orderNumber": "Order",
+    "orderSummary": "Order Summary",
+    "orderItems": "Order Items",
+    "shippingAddress": "Shipping Address",
+    "billingAddress": "Billing Address",
+    "paymentInformation": "Payment Information",
+    "paymentMethod": "Payment Method",
+    "paymentStatus": "Payment Status",
+    "paidAt": "Paid At",
+    "orderNotes": "Order Notes",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "total": "Total",
+    "quantity": "Quantity",
+    "each": "each",
+    "sku": "SKU",
+    "phone": "Phone"
   },
   "products": {
     "title": "Products",
@@ -27,6 +153,9 @@
   "errors": {
     "404": "Page not found",
     "500": "Internal server error",
-    "generic": "Something went wrong"
+    "generic": "Something went wrong",
+    "orderNotFound": "Order not found",
+    "failedToLoad": "Failed to load order details"
   }
 }
+

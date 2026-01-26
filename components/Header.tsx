@@ -1,10 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Search, ShoppingBag, User } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { motion } from "framer-motion";
+import { isAuthenticated } from "@/lib/auth";
 
 export default function Header() {
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setAuthenticated(isAuthenticated());
+  }, []);
+
+  const handleUserClick = () => {
+    if (authenticated) {
+      router.push('/account/dashboard');
+    } else {
+      router.push('/login');
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -43,7 +60,7 @@ export default function Header() {
           <button className="hover:text-primary transition-colors">
             <ShoppingBag className="w-5 h-5" />
           </button>
-          <button className="hover:text-primary transition-colors">
+          <button onClick={handleUserClick} className="hover:text-primary transition-colors">
             <User className="w-5 h-5" />
           </button>
         </div>
