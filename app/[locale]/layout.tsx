@@ -41,12 +41,14 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className="h-full">
       <body
-        className={`${playfair.variable} ${montserrat.variable} bg-background-light text-charcoal font-display antialiased`}
+        className={`${playfair.variable} ${montserrat.variable} bg-background-light text-charcoal font-display antialiased h-full flex flex-col`}
       >
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <div className="flex flex-col min-h-screen">
+            {children}
+          </div>
         </NextIntlClientProvider>
       </body>
     </html>

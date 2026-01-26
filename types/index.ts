@@ -1,210 +1,97 @@
-// API Response Types for OmniStock
+/**
+ * TypeScript type definitions for the application
+ */
 
-export interface ListingDetails {
-  // Website channel details
-  seo?: {
-    title: string;
-    description: string | null;
-    keywords: string[];
-  };
-  shipping_info?: string | null;
-  return_policy?: string | null;
-  warranty_info?: string | null;
-  custom_attributes?: Record<string, string | number | boolean>;
-  is_featured?: boolean;
-  badge?: string | null;
-
-  // Etsy channel details
-  shop_section?: string | null;
-  tags?: string[];
-  materials?: string[];
-  processing_time?: string | null;
-  listing_url?: string | null;
-
-  // Shopify channel details
-  vendor?: string | null;
-  product_type?: string | null;
-  handle?: string | null;
-
-  // Amazon channel details
-  asin?: string | null;
-  bullet_points?: string[];
-  brand?: string | null;
-  fulfillment?: string | null;
+export interface Customer {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string | null;
+  type: 'registered' | 'guest';
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
-export interface Product {
+export interface CustomerAddress {
   id: number;
-  sku?: string; // Optional for listings
-  name?: string; // Optional for listings
-  title?: string; // For listings
-  slug?: string; // For listings
-  description: string | null;
+  customer_id: number;
+  type: 'billing' | 'shipping';
+  first_name: string;
+  last_name: string;
+  company: string | null;
+  address_line_1: string;
+  address_line_2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  phone: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderItem {
+  id: number;
+  product_id: number;
+  listing_id: number | null;
+  product_name: string;
+  product_sku: string;
+  quantity: number;
   price: string;
-  cost_price?: string | null;
-  status: 'active' | 'archived';
-  metadata?: Record<string, any> | null;
-  created_at: string;
-  updated_at: string;
-
-  // Listing-specific fields
-  mapping_type?: 'bundle' | 'variant';
-  calculated_quantity?: number;
-  external_id?: string;
-  url?: string | null;
-
-  // Relationships
-  inventory?: Inventory;
-  categories?: Category[];
-  images?: ProductImage[];
-  translations?: ProductTranslation[];
-  attributes?: ProductAttribute[];
-  products?: Product[]; // For listings that contain multiple products
-
-  // Computed
-  cover_image?: ProductImage;
-  external_purchase_url?: string | null;
-
-  // Channel-specific listing details
-  listing_details?: ListingDetails;
+  total: string;
+  product_snapshot: unknown;
 }
 
-export interface ProductTranslation {
+export interface Order {
   id: number;
-  product_id: number;
-  locale: string;
-  name: string;
-  description: string | null;
+  order_number: string;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  subtotal: string;
+  tax: string;
+  shipping: string;
+  discount: string;
+  total: string;
+  currency: string;
+  customer?: Customer;
+  billing_address?: CustomerAddress;
+  shipping_address?: CustomerAddress;
+  items?: OrderItem[];
+  customer_notes: string | null;
+  payment_method: string | null;
+  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+  paid_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export interface Inventory {
-  id: number;
-  product_id: number;
-  on_hand: number;
-  reserved: number;
-  available: number;
-  created_at: string;
-  updated_at: string;
+export interface LoginCredentials {
+  email: string;
+  password: string;
 }
 
-export interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  description: string | null;
-  parent_id: number | null;
-  sort_order: number;
-  is_active: boolean;
-  show_on_website: boolean;
-  created_at: string;
-  updated_at: string;
-  
-  // Relationships
-  translations?: CategoryTranslation[];
-  products?: Product[];
-  children?: Category[];
-  parent?: Category;
-  
-  // Computed
-  product_count?: number;
+export interface RegisterData {
+  email: string;
+  password: string;
+  password_confirmation: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
 }
 
-export interface CategoryTranslation {
-  id: number;
-  category_id: number;
-  locale: string;
-  name: string;
-  description: string | null;
-  slug: string | null;
-  created_at: string;
-  updated_at: string;
+export interface AuthResponse {
+  customer: Customer;
+  token: string;
 }
 
-export interface ProductImage {
-  id: number;
-  file_hash: string;
-  storage_path: string;
-  storage_url: string;
-  thumbnail_url: string | null;
-  filename: string;
-  mime_type: string;
-  size: number;
-  width: number | null;
-  height: number | null;
-  uploaded_by: number | null;
-  created_at: string;
-  updated_at: string;
-  
-  // Pivot data (from product_images table)
-  pivot?: {
-    product_id: number;
-    image_id: number;
-    sort_order: number;
-    is_cover: boolean;
-  };
-  
-  // Computed
-  is_cover?: boolean;
-  sort_order?: number;
-}
-
-export interface ProductAttribute {
-  name: string;
-  value: string | number | boolean;
-  data_type: 'text' | 'number' | 'boolean' | 'select';
-}
-
-export interface PaginationMeta {
-  current_page: number;
-  from: number | null;
-  last_page: number;
-  per_page: number;
-  to: number | null;
-  total: number;
-}
-
-export interface PaginationLinks {
-  first: string | null;
-  last: string | null;
-  prev: string | null;
-  next: string | null;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  links: PaginationLinks;
-  meta: PaginationMeta;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-}
-
-export interface ApiError {
-  error: string;
-  message: string;
-  debug?: Record<string, any>;
-}
-
-// API Request Parameters
-export interface ProductsParams {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  category?: string;
-  status?: 'active' | 'archived';
-  min_price?: number;
-  max_price?: number;
-  sort?: 'name' | 'price' | 'created_at';
-  order?: 'asc' | 'desc';
-}
-
-export interface CategoriesParams {
-  parent_id?: number | null;
-  status?: 'active' | 'inactive';
-  show_on_website?: boolean;
+export interface DashboardStats {
+  total_orders: number;
+  pending_orders: number;
+  completed_orders: number;
+  total_spent: string;
 }
 

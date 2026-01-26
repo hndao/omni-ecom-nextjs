@@ -1,183 +1,166 @@
-import { getLocale } from 'next-intl/server';
-import type {
-  Product,
-  Category,
-  PaginatedResponse,
-  ProductsParams,
-  CategoriesParams,
-  ApiError,
-} from '@/types';
+/**
+ * API Client for OmniStock Backend
+ * Handles all API requests with authentication and error handling
+ */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY || 'DYaOTulPEj2vJE8EDOzHEHqpHQXNC6mQ';
 const CHANNEL_DOMAIN = process.env.NEXT_PUBLIC_CHANNEL_DOMAIN || 'localhost';
 
-interface FetchOptions extends RequestInit {
-  locale?: string;
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  errors?: Record<string, string[]>;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+}
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public errors?: Record<string, string[]>
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 /**
- * Fetch with locale and channel detection headers
+ * Get authentication token from localStorage
  */
-export async function fetchWithLocale(
+function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('auth_token');
+}
+
+/**
+ * Set authentication token in localStorage
+ */
+export function setAuthToken(token: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('auth_token', token);
+  }
+}
+
+/**
+ * Remove authentication token from localStorage
+ */
+export function removeAuthToken(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('customer');
+  }
+}
+
+/**
+ * Make an API request
+ */
+async function apiRequest<T>(
   endpoint: string,
-  options: FetchOptions = {}
-): Promise<Response> {
-  const { locale: optionsLocale, ...fetchOptions } = options;
-
-  // Get locale from server context or use provided locale
-  const locale = optionsLocale || (await getLocale());
-
-  const headers = new Headers(fetchOptions.headers);
-
-  // Locale headers
-  headers.set('X-Locale', locale);
-  headers.set('Accept-Language', locale);
+  options: RequestInit = {}
+): Promise<T> {
+  const token = getAuthToken();
+  
+  const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
-
-  // Channel detection headers (required by Laravel backend)
-  headers.set('X-API-Key', API_KEY);
+  headers.set('Accept', 'application/json');
   headers.set('X-Channel-Domain', CHANNEL_DOMAIN);
+  
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
 
-  return fetch(`${API_BASE_URL}${endpoint}`, {
-    ...fetchOptions,
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
     headers,
-    next: { revalidate: 60 }, // Cache for 60 seconds
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(
+      data.message || 'An error occurred',
+      response.status,
+      data.errors
+    );
+  }
+
+  return data;
+}
+
+/**
+ * GET request
+ */
+export async function get<T>(endpoint: string): Promise<T> {
+  return apiRequest<T>(endpoint, { method: 'GET' });
+}
+
+/**
+ * POST request
+ */
+export async function post<T>(endpoint: string, body?: unknown): Promise<T> {
+  return apiRequest<T>(endpoint, {
+    method: 'POST',
+    body: body ? JSON.stringify(body) : undefined,
   });
 }
 
 /**
- * Handle API errors
+ * PUT request
  */
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const error: ApiError = await response.json().catch(() => ({
-      error: 'Unknown Error',
-      message: `HTTP ${response.status}: ${response.statusText}`,
-    }));
+export async function put<T>(endpoint: string, body?: unknown): Promise<T> {
+  return apiRequest<T>(endpoint, {
+    method: 'PUT',
+    body: body ? JSON.stringify(body) : undefined,
+  });
+}
 
-    console.error('API Error:', error);
-    throw new Error(error.message || 'API request failed');
+/**
+ * DELETE request
+ */
+export async function del<T>(endpoint: string): Promise<T> {
+  return apiRequest<T>(endpoint, { method: 'DELETE' });
+}
+
+/**
+ * Check if user is authenticated
+ */
+export function isAuthenticated(): boolean {
+  return getAuthToken() !== null;
+}
+
+/**
+ * Get current customer from localStorage
+ */
+export function getCurrentCustomer(): unknown | null {
+  if (typeof window === 'undefined') return null;
+  const customer = localStorage.getItem('customer');
+  return customer ? JSON.parse(customer) : null;
+}
+
+/**
+ * Set current customer in localStorage
+ */
+export function setCurrentCustomer(customer: unknown): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('customer', JSON.stringify(customer));
   }
-
-  return response.json();
 }
 
-/**
- * Get paginated listings with filters (what customers see in the shop)
- */
-export async function getListings(
-  params?: ProductsParams,
-  locale?: string
-): Promise<PaginatedResponse<Product>> {
-  const queryParams = new URLSearchParams();
-
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, String(value));
-      }
-    });
-  }
-
-  const queryString = queryParams.toString();
-  const endpoint = `/listings${queryString ? `?${queryString}` : ''}`;
-
-  const response = await fetchWithLocale(endpoint, { locale });
-  return handleResponse<PaginatedResponse<Product>>(response);
-}
-
-/**
- * Get single listing by ID or slug
- */
-export async function getListing(identifier: string | number, locale?: string): Promise<{ data: Product }> {
-  const response = await fetchWithLocale(`/listings/${identifier}`, { locale });
-  return handleResponse<{ data: Product }>(response);
-}
-
-/**
- * Get related listings based on shared categories
- */
-export async function getRelatedListings(
-  identifier: string | number,
-  limit: number = 4,
-  locale?: string
-): Promise<{ data: Product[] }> {
-  const queryParams = new URLSearchParams();
-  queryParams.append('limit', String(limit));
-
-  const response = await fetchWithLocale(`/listings/${identifier}/related?${queryParams.toString()}`, { locale });
-  return handleResponse<{ data: Product[] }>(response);
-}
-
-/**
- * Get paginated products with filters (legacy - for internal use)
- */
-export async function getProducts(
-  params?: ProductsParams,
-  locale?: string
-): Promise<PaginatedResponse<Product>> {
-  const queryParams = new URLSearchParams();
-
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, String(value));
-      }
-    });
-  }
-
-  const queryString = queryParams.toString();
-  const endpoint = `/products${queryString ? `?${queryString}` : ''}`;
-
-  const response = await fetchWithLocale(endpoint, { locale });
-  return handleResponse<PaginatedResponse<Product>>(response);
-}
-
-/**
- * Get single product by ID
- */
-export async function getProduct(id: number, locale?: string): Promise<{ data: Product }> {
-  const response = await fetchWithLocale(`/products/${id}`, { locale });
-  return handleResponse<{ data: Product }>(response);
-}
-
-/**
- * Get categories with optional filters
- */
-export async function getCategories(
-  params?: CategoriesParams,
-  locale?: string
-): Promise<{ data: Category[] }> {
-  const queryParams = new URLSearchParams();
-
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, String(value));
-      }
-    });
-  }
-
-  const queryString = queryParams.toString();
-  const endpoint = `/categories${queryString ? `?${queryString}` : ''}`;
-
-  const response = await fetchWithLocale(endpoint, { locale });
-  return handleResponse<{ data: Category[] }>(response);
-}
-
-/**
- * Get single category by slug
- */
-export async function getCategory(slug: string, locale?: string): Promise<{ data: Category }> {
-  const response = await fetchWithLocale(`/categories/${slug}`, { locale });
-  return handleResponse<{ data: Category }>(response);
-}
-
-/**
- * Get supported locales
- */
-export async function getLocales(): Promise<{ data: { code: string; name: string }[] }> {
-  const response = await fetchWithLocale('/locales');
-  return handleResponse<{ data: { code: string; name: string }[] }>(response);
-}

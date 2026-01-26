@@ -10,6 +10,8 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 import { useRouter, usePathname } from "@/i18n/routing";
 import type { Product, Category, PaginationMeta } from "@/types";
 import { useLocale } from "next-intl";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 interface ShopClientProps {
   initialProducts: Product[];
@@ -178,56 +180,10 @@ export default function ShopClient({
     <>
       {showConfetti && <Confetti width={width} height={height} recycle={false} numberOfPieces={500} />}
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full bg-background-light/90 backdrop-blur-md border-b border-charcoal/5">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex h-20 items-center justify-between">
-          <div className="flex items-center gap-12">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold tracking-tighter uppercase">Luxe Gemstones</span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest text-charcoal/70">
-              <Link href="/shop" className="hover:text-primary transition-colors">
-                Collections
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Bespoke
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Heritage
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Journal
-              </Link>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <form onSubmit={handleSearch} className="relative hidden sm:block">
-              <input
-                className="bg-transparent border-none border-b border-charcoal/20 focus:border-primary focus:ring-0 text-sm py-1 px-0 w-48 placeholder:text-charcoal/40"
-                placeholder="Search our archives..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="absolute right-0 top-1">
-                <Search className="text-charcoal/40 w-4 h-4" />
-              </button>
-            </form>
-            <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-charcoal/5 rounded-full transition-colors">
-                <ShoppingBag className="w-5 h-5" />
-              </button>
-              <button className="p-2 hover:bg-charcoal/5 rounded-full transition-colors">
-                <User className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
-      <main className="max-w-[1440px] mx-auto px-6 lg:px-12 py-12">
+      <main className="flex-grow max-w-[1440px] mx-auto px-6 lg:px-12 py-12 w-full">
         {/* Breadcrumbs & Heading */}
         <div className="mb-16">
           <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-charcoal/50 mb-6">
@@ -262,6 +218,22 @@ export default function ShopClient({
                     Reset
                   </button>
                 </h3>
+
+                {/* Search Filter */}
+                <div className="mb-6">
+                  <form onSubmit={handleSearch} className="relative">
+                    <input
+                      className="w-full bg-transparent border border-charcoal/20 focus:border-primary focus:ring-0 text-sm py-2 px-3 placeholder:text-charcoal/40 rounded"
+                      placeholder="Search products..."
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Search className="text-charcoal/40 w-4 h-4" />
+                    </button>
+                  </form>
+                </div>
 
                 {/* Category Filter */}
                 <div className="space-y-4">
@@ -396,36 +368,7 @@ export default function ShopClient({
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-background-light border-t border-charcoal/5 py-24 mt-24">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-16">
-          <div className="col-span-1 md:col-span-1">
-            <h2 className="text-2xl font-bold uppercase mb-8 tracking-tighter text-charcoal">Luxe Gemstones</h2>
-            <p className="text-sm font-light text-charcoal/60 leading-relaxed mb-8">
-              Crafting legacies since 1924. We specialize in the acquisition of rare earth elements and bespoke jewelry
-              design.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-xs uppercase tracking-[0.2em] font-bold mb-8 text-primary">Explore</h4>
-            <ul className="space-y-4 text-sm font-light text-charcoal/60">
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  The Archives
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Investment Grade
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 mt-24 pt-8 border-t border-charcoal/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest text-charcoal/40">
-          <p>© 2024 Luxe Gemstones International. All Rights Reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

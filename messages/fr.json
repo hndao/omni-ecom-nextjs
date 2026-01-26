@@ -8,11 +8,137 @@
     "checkout": "Passer la commande",
     "search": "Rechercher",
     "login": "Connexion",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "myAccount": "Mon compte",
+    "shop": "Boutique",
+    "home": "Accueil",
+    "backToDashboard": "Retour au tableau de bord",
+    "backToOrders": "Retour aux commandes"
+  },
+  "home": {
+    "title": "Bienvenue chez Omni E-Commerce",
+    "subtitle": "Votre guichet unique pour des produits incroyables. Parcourez notre collection et trouvez exactement ce dont vous avez besoin.",
+    "startShopping": "Commencer vos achats",
+    "myAccount": "Mon compte",
+    "features": {
+      "wideSelection": {
+        "title": "Large sélection",
+        "description": "Parcourez notre vaste collection de produits dans plusieurs catégories."
+      },
+      "fastShipping": {
+        "title": "Livraison rapide",
+        "description": "Recevez vos commandes rapidement avec nos partenaires de livraison fiables."
+      },
+      "secureCheckout": {
+        "title": "Paiement sécurisé",
+        "description": "Achetez en toute confiance grâce à notre système de paiement sécurisé."
+      }
+    },
+    "quickLinks": "Liens rapides",
+    "footer": "© 2026 Omni E-Commerce. Tous droits réservés."
+  },
+  "auth": {
+    "signIn": "Connectez-vous à votre compte",
+    "createAccount": "Créez votre compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte?",
+    "dontHaveAccount": "Ou",
+    "createNewAccount": "créer un nouveau compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "phone": "Téléphone (optionnel)",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié?",
+    "signInButton": "Se connecter",
+    "signingIn": "Connexion en cours...",
+    "createAccountButton": "Créer un compte",
+    "creatingAccount": "Création du compte...",
+    "acceptTerms": "J'accepte les",
+    "termsAndConditions": "Conditions générales",
+    "passwordMinLength": "Doit contenir au moins 8 caractères"
+  },
+  "dashboard": {
+    "welcome": "Bon retour",
+    "subtitle": "Gérez votre compte et consultez vos commandes",
+    "stats": {
+      "totalOrders": "Total des commandes",
+      "pendingOrders": "Commandes en attente",
+      "completedOrders": "Commandes terminées",
+      "totalSpent": "Total dépensé"
+    },
+    "quickLinks": {
+      "orderHistory": {
+        "title": "Historique des commandes",
+        "description": "Consultez toutes vos commandes et suivez les expéditions"
+      },
+      "addresses": {
+        "title": "Adresses",
+        "description": "Gérez vos adresses de livraison et de facturation"
+      },
+      "settings": {
+        "title": "Paramètres du compte",
+        "description": "Mettez à jour votre profil et vos préférences"
+      }
+    },
+    "recentOrders": "Commandes récentes",
+    "viewAll": "Voir tout",
+    "noOrders": "Aucune commande pour le moment",
+    "startShopping": "Commencer vos achats",
+    "loading": "Chargement..."
+  },
+  "orders": {
+    "title": "Historique des commandes",
+    "subtitle": "Consultez et suivez toutes vos commandes",
+    "searchPlaceholder": "Rechercher par numéro de commande ou nom de produit...",
+    "filterByStatus": "Filtrer par statut",
+    "allOrders": "Toutes les commandes",
+    "status": {
+      "pending": "En attente",
+      "processing": "En traitement",
+      "shipped": "Expédiée",
+      "delivered": "Livrée",
+      "cancelled": "Annulée"
+    },
+    "placedOn": "Passée le",
+    "items": "article",
+    "itemsPlural": "articles",
+    "more": "de plus",
+    "viewDetails": "Voir les détails",
+    "reorder": "Recommander",
+    "cancelOrder": "Annuler la commande",
+    "noOrdersFound": "Aucune commande trouvée",
+    "startShopping": "Commencer vos achats",
+    "loadingOrders": "Chargement des commandes...",
+    "page": "Page",
+    "of": "sur",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "orderNumber": "Commande",
+    "orderSummary": "Résumé de la commande",
+    "orderItems": "Articles de la commande",
+    "shippingAddress": "Adresse de livraison",
+    "billingAddress": "Adresse de facturation",
+    "paymentInformation": "Informations de paiement",
+    "paymentMethod": "Mode de paiement",
+    "paymentStatus": "Statut du paiement",
+    "paidAt": "Payé le",
+    "orderNotes": "Notes de commande",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "tax": "Taxes",
+    "discount": "Réduction",
+    "total": "Total",
+    "quantity": "Quantité",
+    "each": "chacun",
+    "sku": "SKU",
+    "phone": "Téléphone"
   },
   "products": {
     "title": "Produits",
-    "description": "Parcourir notre collection",
+    "description": "Parcourez notre collection",
     "price": "Prix",
     "addToCart": "Ajouter au panier",
     "outOfStock": "Rupture de stock",
@@ -27,6 +153,9 @@
   "errors": {
     "404": "Page non trouvée",
     "500": "Erreur interne du serveur",
-    "generic": "Une erreur s'est produite"
+    "generic": "Une erreur s'est produite",
+    "orderNotFound": "Commande non trouvée",
+    "failedToLoad": "Échec du chargement des détails de la commande"
   }
 }
+
