@@ -77,12 +77,12 @@ async function apiRequest<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const token = getAuthToken();
-  
+
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
   headers.set('Accept', 'application/json');
   headers.set('X-Channel-Domain', CHANNEL_DOMAIN);
-  
+
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
@@ -108,15 +108,16 @@ async function apiRequest<T>(
 /**
  * GET request
  */
-export async function get<T>(endpoint: string): Promise<T> {
-  return apiRequest<T>(endpoint, { method: 'GET' });
+export async function get<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  return apiRequest<T>(endpoint, { ...options, method: 'GET' });
 }
 
 /**
  * POST request
  */
-export async function post<T>(endpoint: string, body?: unknown): Promise<T> {
+export async function post<T>(endpoint: string, body?: unknown, options?: RequestInit): Promise<T> {
   return apiRequest<T>(endpoint, {
+    ...options,
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -125,8 +126,9 @@ export async function post<T>(endpoint: string, body?: unknown): Promise<T> {
 /**
  * PUT request
  */
-export async function put<T>(endpoint: string, body?: unknown): Promise<T> {
+export async function put<T>(endpoint: string, body?: unknown, options?: RequestInit): Promise<T> {
   return apiRequest<T>(endpoint, {
+    ...options,
     method: 'PUT',
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -135,8 +137,8 @@ export async function put<T>(endpoint: string, body?: unknown): Promise<T> {
 /**
  * DELETE request
  */
-export async function del<T>(endpoint: string): Promise<T> {
-  return apiRequest<T>(endpoint, { method: 'DELETE' });
+export async function del<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  return apiRequest<T>(endpoint, { ...options, method: 'DELETE' });
 }
 
 /**
