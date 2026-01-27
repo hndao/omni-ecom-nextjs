@@ -2,7 +2,7 @@
  * Authentication API functions
  */
 
-import { post, get, setAuthToken, removeAuthToken, setCurrentCustomer } from './api';
+import { post, get, put, setAuthToken, removeAuthToken, setCurrentCustomer } from '../lib/api';
 import type { LoginCredentials, RegisterData, AuthResponse, Customer } from '../types';
 
 /**
@@ -59,11 +59,11 @@ export async function getProfile(): Promise<Customer> {
  * Update the current customer's profile
  */
 export async function updateProfile(data: Partial<Customer>): Promise<Customer> {
-  const response = await post<{ data: Customer }>('/auth/profile', data);
-  
+  const response = await put<{ data: Customer }>('/auth/profile', data);
+
   // Update stored customer data
   setCurrentCustomer(response.data);
-  
+
   return response.data;
 }
 
@@ -75,6 +75,6 @@ export async function changePassword(data: {
   password: string;
   password_confirmation: string;
 }): Promise<void> {
-  await post('/auth/change-password', data);
+  await put('/auth/change-password', data);
 }
 
