@@ -1,107 +1,36 @@
-feat: Implement Account Settings and Address Book pages (#10, #11)
+feat: Implement Blog List Page (#12)
 
-This commit implements GitHub issues #10 (Account Settings Page) and #11 (Address Book Page).
+## Features Implemented:
+- Blog list page with grid layout
+- Search functionality (search in title and excerpt)
+- Filter by category
+- Filter by tag
+- Sort by date (latest) or popularity (views count)
+- Pagination with page numbers
+- Post preview cards with:
+  - Featured image (or gradient placeholder)
+  - Category badge
+  - Title and excerpt
+  - Published date and reading time
+  - Tags
+  - Read more button
+- Responsive design (mobile, tablet, desktop)
+- Loading states
+- Empty state with clear filters option
+- Active filters indicator
 
-## Account Settings Page (#10)
-- Created app/[locale]/account/settings/page.tsx (server component wrapper)
-- Created app/[locale]/account/settings/SettingsClient.tsx with:
-  * Profile settings form (first name, last name, email, phone)
-  * Password change form with validation
-  * Tab navigation between Profile and Password sections
-  * Form validation and error handling
-  * Loading and saving states
-  * Success/error notifications
+## Technical Details:
+- Created `lib/blog.ts` with blog API functions
+- Created `app/[locale]/blog/page.tsx` (server component)
+- Created `app/[locale]/blog/BlogListClient.tsx` (client component)
+- Added blog translations (English & French)
+- Created 14 unit tests for blog utilities
+- All 84 tests passing (70 existing + 14 new)
 
-## Address Book Page (#11)
-- Created app/[locale]/account/addresses/page.tsx (server component wrapper)
-- Created app/[locale]/account/addresses/AddressesClient.tsx with:
-  * List all saved addresses in responsive grid
-  * Add new address modal form
-  * Edit existing address functionality
-  * Delete address with confirmation
-  * Set default shipping/billing address
-  * Address type badges (shipping/billing)
-  * Default address indicator (star icon)
-  * Empty state with call-to-action
-  * Form validation using validateAddress()
-  * Formatted address display
+## API Integration:
+- GET /api/blog/posts (with pagination, filters, search)
+- GET /api/blog/categories
+- GET /ap- GET /ap- GET /ap- GET /ap- GET /aed - GET /ap- GET /ap- GETations in English and French
+- Support for dynamic content (reading time, pagination info)
 
-## Address Management Library
-- Created lib/addresses.ts with:
-  * getAddresses() - Fetch all customer addresses
-  * getAddress(id) - Fetch specific address
-  * createAddress(data) - Create new address
-  * updateAddress(id, data) - Update existing address
-  * deleteAddress(id) - Delete address
-  * setDefaultAddress(id) - Set address as default
-  * validateAddress(data) - Client-side validation
-  * formatAddress(address) - Format address for display
-  * getAddressTypeLabel(type) - Get localized type label
-
-## Authentication Updates
-- Fixed types/auth.ts to use PUT method for:
-  * updateProfile() - Changed from POST to PUT
-  * changePassword() - Changed from POST to PUT
-- Fixed import path from './api' to '../lib/api'
-
-## Internationalization
-- Added 'settings' namespace to messages/en.json with:
-  * Profile settings labels
-  * Password change labels
-  * Form validation messages
-- Added 'addresses' namespace to messages/en.json with:
-  * Address form labels
-  * Address type labels
-  * Action button labels
-  * Empty state messages
-- Added French translations to messages/fr.json for both namespaces
-
-## Testing
-- Created __tests__/lib/addresses.test.ts with 10 tests:
-  * validateAddress() - 6 tests for validation logic
-  * formatAddress() - 2 tests for address formatting
-  * getAddressTypeLabel() - 2 tests for type labels
-- All 70 tests passing (60 existing + 10 new)
-
-## Features Implemented
-✅ Profile Settings:
-  - Update name, email, phone
-  - Form validation
-  - Success/error handling
-
-✅ Password Settings:
-  - Change password form
-  - Current password verification
-  - Password strength requirements
-  - Password confirmation matching
-
-✅ Address Book:
-  - List all addresses
-  - Add new address
-  - Edit existing address
-  - Delete address with confirmation
-  - Set default shipping/billing address
-  - Address validation
-  - Empty state
-
-## Backend Integration
-- Uses existing backend APIs:
-  * PUT /api/auth/profile - Update customer profile
-  * PUT /api/auth/change-password - Change password
-  * GET /api/customer/addresses - List addresses
-  * POST /api/customer/addresses - Create address
-  * PUT /api/customer/addresses/{id} - Update address
-  * DELETE /api/customer/addresses/{id} - Delete address
-  * POST /api/customer/addresses/{id}/set-default - Set default
-
-## Technical Details
-- Responsive design (mobile-first)
-- Full i18n support (en/fr)
-- Loading states with spinners
-- Error handling with user-friendly messages
-- Form validation (client-side and server-side)
-- Modal dialogs for address forms
-- Tab navigation for settings sections
-- Default address indicators
-- Address type badges
-
+Closes #12
