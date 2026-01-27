@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isAuthenticated, getCurrentCustomer, logout, type Customer } from '@/lib/auth';
-import { getDashboardStats, type DashboardStats } from '@/lib/orders';
+import { getDashboardStats } from '@/lib/orders';
+import type { DashboardStats } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -30,8 +31,8 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
 
     // Fetch dashboard stats
     getDashboardStats()
-      .then((response) => {
-        setStats(response.data);
+      .then((stats) => {
+        setStats(stats);
       })
       .catch((error) => {
         console.error('Failed to fetch dashboard stats:', error);

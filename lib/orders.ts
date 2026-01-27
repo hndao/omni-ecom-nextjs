@@ -52,7 +52,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const stats: DashboardStats = {
     total_orders: orders.meta.total,
     pending_orders: orders.data.filter(o => o.status === 'pending').length,
-    completed_orders: orders.data.filter(o => o.status === 'completed' || o.status === 'delivered').length,
+    completed_orders: orders.data.filter(o => o.status === 'delivered').length,
     total_spent: orders.data
       .filter(o => o.status !== 'cancelled')
       .reduce((sum, order) => sum + parseFloat(order.total), 0)

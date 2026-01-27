@@ -175,7 +175,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], loc
             {/* Main Image */}
             <div className="aspect-square relative bg-gray-100 overflow-hidden">
               <Image
-                src={displayImages[selectedImage]?.storage_url || displayImages[0].storage_url}
+                src={displayImages[selectedImage]?.storage_url || displayImages[0]?.storage_url || ''}
                 alt={getProductName()}
                 fill
                 className="object-cover"
@@ -197,7 +197,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], loc
                     }`}
                   >
                     <Image
-                      src={image.storage_url}
+                      src={image.storage_url || ''}
                       alt={`${getProductName()} - Image ${index + 1}`}
                       fill
                       className="object-cover"
@@ -458,7 +458,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], loc
                     {/* Primary Image */}
                     {relatedCoverImage && (
                       <Image
-                        src={relatedCoverImage.storage_url}
+                        src={relatedCoverImage.storage_url || ''}
                         alt={relatedProduct.title || relatedProduct.name || 'Product'}
                         fill
                         className="object-cover transition-opacity duration-500 group-hover:opacity-0"
@@ -467,7 +467,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], loc
                     {/* Secondary Image (on hover) */}
                     {relatedSecondImage && (
                       <Image
-                        src={relatedSecondImage.storage_url}
+                        src={relatedSecondImage.storage_url || ''}
                         alt={relatedProduct.title || relatedProduct.name || 'Product'}
                         fill
                         className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"

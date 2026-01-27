@@ -231,8 +231,8 @@ export default function TrackOrderClient() {
                 <p className="font-medium">
                   {order.shipping_address.first_name} {order.shipping_address.last_name}
                 </p>
-                <p>{order.shipping_address.address_line1}</p>
-                {order.shipping_address.address_line2 && <p>{order.shipping_address.address_line2}</p>}
+                <p>{order.shipping_address.address_line_1}</p>
+                {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
                 <p>
                   {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}
                 </p>

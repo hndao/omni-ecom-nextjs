@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getListing, getRelatedListings } from '@/lib/api';
+import { getListing, getRelatedListings } from '@/lib/products';
 import ProductDetailClient from './ProductDetailClient';
 import { notFound } from 'next/navigation';
 

@@ -153,8 +153,8 @@ export default function OrderConfirmationClient({ orderNumber }: OrderConfirmati
               <p className="font-medium">
                 {order.shipping_address.first_name} {order.shipping_address.last_name}
               </p>
-              <p>{order.shipping_address.address_line1}</p>
-              {order.shipping_address.address_line2 && <p>{order.shipping_address.address_line2}</p>}
+              <p>{order.shipping_address.address_line_1}</p>
+              {order.shipping_address.address_line_2 && <p>{order.shipping_address.address_line_2}</p>}
               <p>
                 {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}
               </p>
@@ -175,8 +175,8 @@ export default function OrderConfirmationClient({ orderNumber }: OrderConfirmati
               <p className="font-medium">
                 {order.billing_address.first_name} {order.billing_address.last_name}
               </p>
-              <p>{order.billing_address.address_line1}</p>
-              {order.billing_address.address_line2 && <p>{order.billing_address.address_line2}</p>}
+              <p>{order.billing_address.address_line_1}</p>
+              {order.billing_address.address_line_2 && <p>{order.billing_address.address_line_2}</p>}
               <p>
                 {order.billing_address.city}, {order.billing_address.state} {order.billing_address.postal_code}
               </p>

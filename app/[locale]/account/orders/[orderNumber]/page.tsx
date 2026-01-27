@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isAuthenticated } from '@/lib/auth';
-import { getOrder, cancelOrder, type Order } from '@/lib/orders';
+import { getOrder, cancelOrder } from '@/lib/orders';
+import type { Order } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -35,8 +36,8 @@ export default function OrderDetailPage({
 
   const fetchOrder = async () => {
     try {
-      const response = await getOrder(orderNumber);
-      setOrder(response.data);
+      const order = await getOrder(orderNumber);
+      setOrder(order);
     } catch (err: any) {
       setError(err.message || te('failedToLoad'));
     } finally {

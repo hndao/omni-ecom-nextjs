@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isAuthenticated } from '@/lib/auth';
-import { getOrders, type Order } from '@/lib/orders';
+import { getOrders } from '@/lib/orders';
+import type { Order } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 

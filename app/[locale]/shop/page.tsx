@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getListings, getCategories } from '@/lib/api';
+import { getListings, getCategories } from '@/lib/products';
 import ShopClient from './ShopClient';
 import type { Product, Category } from '@/types';
 
