@@ -4,6 +4,7 @@
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY || '';
 const CHANNEL_DOMAIN = process.env.NEXT_PUBLIC_CHANNEL_DOMAIN || 'localhost';
 
 export interface ApiResponse<T> {
@@ -81,6 +82,7 @@ async function apiRequest<T>(
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
   headers.set('Accept', 'application/json');
+  headers.set('X-API-Key', API_KEY);
   headers.set('X-Channel-Domain', CHANNEL_DOMAIN);
 
   if (token) {
