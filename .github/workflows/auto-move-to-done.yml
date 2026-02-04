@@ -1,0 +1,126 @@
+name: Auto-move Issue to Done on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  move-to-done:
+    # Only run if PR was merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Extract issue number from PR body
+        id: extract_issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Extract issue number from "Closes #123" or "closes #123" or "Fixes #123"
+          ISSUE_NUMBER=$(echo "$PR_BODY" | grep -oiE '(closes|close|closed|fix|fixes|fixed|resolve|resolves|resolved) #[0-9]+' | head -n1 | grep -oE '[0-9]+')
+          
+          if [ -z "$ISSUE_NUMBER" ]; then
+            echo "No issue number found in PR body"
+            echo "issue_number=" >> $GITHUB_OUTPUT
+          else
+            echo "Found issue number: $ISSUE_NUMBER"
+            echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Move issue to Done
+        if: steps.extract_issue.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_ID: "PVT_kwHOApV3Rc4BNaau"
+          ISSUE_NUMBER: ${{ steps.extract_issue.outputs.issue_number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          # Get the issue node ID
+          ISSUE_NODE_ID=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!, $number: Int!) {
+              repository(owner: $owner, name: $repo) {
+                issue(number: $number) {
+                  id
+                }
+              }
+            }
+          ' -f owner="$REPO_OWNER" -f repo="$REPO_NAME" -F number="$ISSUE_NUMBER" --jq '.data.repository.issue.id')
+          
+          echo "Issue Node ID: $ISSUE_NODE_ID"
+          
+          # Get the project's "Done" status field ID and option ID
+          PROJECT_DATA=$(gh api graphql -f query='
+            query($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  field(name: "Status") {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      options {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -f projectId="$PROJECT_ID")
+          
+          FIELD_ID=$(echo "$PROJECT_DATA" | jq -r '.data.node.field.id')
+          DONE_OPTION_ID=$(echo "$PROJECT_DATA" | jq -r '.data.node.field.options[] | select(.name == "Done") | .id')
+          
+          echo "Field ID: $FIELD_ID"
+          echo "Done Option ID: $DONE_OPTION_ID"
+          
+          # Get the project item ID for this issue
+          ITEM_ID=$(gh api graphql -f query='
+            query($projectId: ID!, $issueId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  items(first: 100) {
+                    nodes {
+                      id
+                      content {
+                        ... on Issue {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -f projectId="$PROJECT_ID" -f issueId="$ISSUE_NODE_ID" | jq -r ".data.node.items.nodes[] | select(.content.id == \"$ISSUE_NODE_ID\") | .id")
+          
+          echo "Project Item ID: $ITEM_ID"
+          
+          # Update the status to "Done"
+          gh api graphql -f query='
+            mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+              updateProjectV2ItemFieldValue(
+                input: {
+                  projectId: $projectId
+                  itemId: $itemId
+                  fieldId: $fieldId
+                  value: { singleSelectOptionId: $optionId }
+                }
+              ) {
+                projectV2Item {
+                  id
+                }
+              }
+            }
+          ' -f projectId="$PROJECT_ID" -f itemId="$ITEM_ID" -f fieldId="$FIELD_ID" -f optionId="$DONE_OPTION_ID"
+          
+          echo "✅ Issue #$ISSUE_NUMBER moved to Done"
+
+      - name: Comment on PR
+        if: steps.extract_issue.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          ISSUE_NUMBER: ${{ steps.extract_issue.outputs.issue_number }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body "✅ Issue #$ISSUE_NUMBER has been automatically moved to **Done** on the project board."
