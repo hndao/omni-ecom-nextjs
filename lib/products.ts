@@ -41,6 +41,8 @@ export interface ListingsParams {
   status?: string;
   sort?: string;
   order?: 'asc' | 'desc';
+  featured?: boolean;
+  limit?: number;
 }
 
 export interface CategoriesParams {
@@ -65,6 +67,8 @@ export async function getListings(
   if (params.status) queryParams.append('status', params.status);
   if (params.sort) queryParams.append('sort', params.sort);
   if (params.order) queryParams.append('order', params.order);
+  if (params.featured !== undefined) queryParams.append('featured', params.featured ? 'true' : 'false');
+  if (params.limit) queryParams.append('limit', params.limit.toString());
   if (locale) queryParams.append('locale', locale);
   
   const url = `/listings${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
@@ -133,6 +137,23 @@ export async function getCategory(
   
   const url = `/categories/${slug}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
   return get<{ data: Category }>(url);
+}
+
+/**
+ * Get featured listings (non-paginated)
+ */
+export async function getFeaturedListings(
+  limit: number = 6,
+  locale?: string
+): Promise<Product[]> {
+  const queryParams = new URLSearchParams();
+  queryParams.append('featured', 'true');
+  queryParams.append('limit', limit.toString());
+  if (locale) queryParams.append('locale', locale);
+
+  const url = `/listings?${queryParams.toString()}`;
+  const response = await get<{ success: boolean; data: Product[] }>(url);
+  return response.data ?? [];
 }
 
 /**

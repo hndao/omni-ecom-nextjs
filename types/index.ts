@@ -192,3 +192,31 @@ export interface ListingDetails extends Product {
   related_products?: Product[];
 }
 
+export interface HeroContent {
+  title: string;
+  subtitle?: string;
+  description: string;
+  cta_text: string;
+  cta_link: string;
+  background_image?: ProductImage;
+}
+
+export interface HomePageData {
+  hero: HeroContent;
+  featured_section_title: string;
+  featured_section_subtitle: string;
+}
+
+export interface Testimonial {
+  id: number;
+  customer_name: string;
+  rating: number;
+  review_text: string;
+  created_at: string;
+}
+
+export interface NewsletterSubscription {
+  email: string;
+  source: string;
+}
+
